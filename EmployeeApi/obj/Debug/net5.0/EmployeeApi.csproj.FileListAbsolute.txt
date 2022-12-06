@@ -59,3 +59,9 @@ D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\obj\Debug\net5.0\EmployeeApi.dl
 D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\obj\Debug\net5.0\ref\EmployeeApi.dll
 D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\obj\Debug\net5.0\EmployeeApi.pdb
 D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\obj\Debug\net5.0\EmployeeApi.genruntimeconfig.cache
+D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\bin\Debug\net5.0\AutoMapper.dll
+D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
+D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+D:\CS Assignment\EmployeeApi_Angular\EmployeeApi\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll

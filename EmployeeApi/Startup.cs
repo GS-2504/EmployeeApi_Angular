@@ -1,4 +1,5 @@
 using EmployeeApi.Data;
+using EmployeeApi.DTOMappingProfile;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,7 @@ namespace EmployeeApi
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("conStr")));
             services.AddControllers();
+            services.AddAutoMapper(typeof(DtoMappingProfile));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployeeApi", Version = "v1" });

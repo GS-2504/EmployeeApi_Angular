@@ -11,6 +11,6 @@ namespace EmployeeApi.Models
         [Key]
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
-        public ICollection<Employee> Employees { get; set; }
+        public ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
     }
 }

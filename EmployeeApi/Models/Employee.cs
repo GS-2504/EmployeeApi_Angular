@@ -12,7 +12,8 @@ namespace EmployeeApi.Models
         public int EmployeeId { get; set; }
         public string EmployeeName { get; set; }
         public string EmployeeAddress { get; set; }
+        public int DesignationId { get; set; }
         public Designation Designation { get; set; }
-        public ICollection<Department> Departments { get; set; }
+        public ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
     }
 }
