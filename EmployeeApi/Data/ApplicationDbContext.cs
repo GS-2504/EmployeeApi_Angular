@@ -22,9 +22,6 @@ namespace EmployeeApi.Data
             modelBuilder.Entity<EmployeeDepartment>().
                 HasKey(x => new { x.DepartmentId, x.EmployeeId });
             modelBuilder.Entity<EmployeeDepartment>()
-                 .HasKey(t => new { t.EmployeeId, t.DepartmentId });
-
-            modelBuilder.Entity<EmployeeDepartment>()
                         .HasOne(t => t.Employee)
                         .WithMany(t => t.EmployeeDepartments)
                         .HasForeignKey(t => t.EmployeeId);
