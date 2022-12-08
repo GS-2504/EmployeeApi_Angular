@@ -30,7 +30,7 @@ namespace EmployeeApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("conStr")));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddAutoMapper(typeof(DtoMappingProfile));
             services.AddSwaggerGen(c =>
             {
