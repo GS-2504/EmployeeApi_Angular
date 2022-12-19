@@ -2,6 +2,7 @@
 using EmployeeApi.Data;
 using EmployeeApi.Models;
 using EmployeeApi.Models.DTOs;
+using EmployeeApi.Models.EmployeeVM;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -26,60 +27,66 @@ namespace EmployeeApi.Controllers
         }
         [HttpGet("{id:int}")]
         public IActionResult GetEmployee(int id)
-        {
-            var employeeFromDb = _context.Employees.Find(id);
+        { 
+            var employeeFromDb = _context.Employees.Include(deg=>deg.Designation).FirstOrDefault(empId=>empId.EmployeeId==id);
             if (employeeFromDb == null) return NotFound();
             var departmentFromDb = _context.EmployeeDepartments.
-                Where(emp => emp.EmployeeId == id).Select(dep => dep.DepartmentId);
-            List<string> departmentsNameList = new List<string>();
-            var departments = _context.Departments.ToList();
-            foreach (var depId in departmentFromDb)
+                Where(emp => emp.EmployeeId == id).Select(dep => dep.Department.DepartmentName);
+             List<string> departmentsNameList = new List<string>();
+            foreach (var dep in departmentFromDb)
             {
-                var departmentName = departments.Where(dep => dep.DepartmentId == depId).
-                     Select(dep => dep.DepartmentName).FirstOrDefault();
-                departmentsNameList.Add(departmentName);
+                departmentsNameList.Add(dep);
             }
-            EmployeeDto employeeDto = new EmployeeDto()
+            EmployeeListDto employeeListDto = new EmployeeListDto()
             {
                 EmployeeId = employeeFromDb.EmployeeId,
                 EmployeeName = employeeFromDb.EmployeeName,
-                DesignationId = employeeFromDb.DesignationId,
+                EmployeeDesignationName = employeeFromDb.Designation.DesignationName,
                 EmployeeAddress = employeeFromDb.EmployeeAddress,
-                DepartmentsNames = departmentsNameList
+                EmployeeDepartments= departmentsNameList
             };
-            return Ok(employeeDto);
+            return Ok(employeeListDto);
         }
         [HttpGet]
         public IActionResult GetAllEmployees()
-        {
-            var employeeDataFromDb = from employee in _context.Employees
+        { 
+            var employeeDataFromDb = from employee in _context.Employees.Include(deg => deg.Designation)
                                      join employeeDepartment in _context.EmployeeDepartments
                                      on employee.EmployeeId equals employeeDepartment.EmployeeId
-                                     select new
+                                     select new EmployeeListDto
                                      {
                                          EmployeeId = employee.EmployeeId,
                                          EmployeeName = employee.EmployeeName,
                                          EmployeeAddress = employee.EmployeeAddress,
-                                         DesignationId = employee.DesignationId,
-                                         Departments = employeeDepartment.Department
+                                         EmployeeDesignationName = employee.Designation.DesignationName,
+                                         EmployeeDepartments = _context.EmployeeDepartments.Where(emp => emp.EmployeeId == employee.EmployeeId).
+                                         Select(dep => dep.Department.DepartmentName).ToList()
                                      };
-            return Ok(employeeDataFromDb);
+                  List<EmployeeListDto> employeeList = new List<EmployeeListDto>();
+            foreach (var employee in employeeDataFromDb)
+            {
+                if (employeeList.FirstOrDefault(empInList => empInList.EmployeeId ==employee.EmployeeId) == null)
+                {
+                     employeeList.Add(employee);
+                }
+            }
+                       return  Ok(employeeList);
         }
         [HttpPost]
         public IActionResult AddEmployee(EmployeeDto employeeDto)
         {
-            if (!ModelState.IsValid && employeeDto == null) return BadRequest();
-            Employee employee = new Employee()
+            if (!ModelState.IsValid && employeeDto==null) return BadRequest();
+            Employee employee = new Employee
             {
-                EmployeeId = employeeDto.EmployeeId,
-                EmployeeName = employeeDto.EmployeeName,
-                EmployeeAddress = employeeDto.EmployeeAddress,
-                DesignationId = employeeDto.DesignationId,
+                    EmployeeId=employeeDto.EmployeeId,
+                    EmployeeName=employeeDto.EmployeeName,
+                    EmployeeAddress=employeeDto.EmployeeAddress,
+                    DesignationId=employeeDto.DesignationId,
             };
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
-            List<EmployeeDepartment> departmentEmployees = new List<EmployeeDepartment>();
-            foreach (var empDep in employeeDto.DepartmentsIds)
+                  _context.Employees.Add(employee);
+                       _context.SaveChanges();
+             List<EmployeeDepartment> departmentEmployees = new List<EmployeeDepartment>();
+             foreach (var empDep in  employeeDto.DepartmentsIds)
             {
                 EmployeeDepartment EmployeeDepartment = new EmployeeDepartment()
                 {
@@ -103,55 +110,32 @@ namespace EmployeeApi.Controllers
                 EmployeeAddress = employeeDto.EmployeeAddress,
                 DesignationId = employeeDto.DesignationId
             };
-            _context.Employees.Update(employee);
-            _context.SaveChanges();
+                  _context.Employees.Update(employee);
+                    _context.SaveChanges();
             var employeeExistingDepartments = _context.EmployeeDepartments.Where(dep => dep.EmployeeId == employee.EmployeeId).ToList();
-            _context.RemoveRange(employeeExistingDepartments);
-            List<EmployeeDepartment> departmentEmployees = new List<EmployeeDepartment>();
+             _context.RemoveRange(employeeExistingDepartments);
+            List<EmployeeDepartment> employeeDepartments = new List<EmployeeDepartment>();
             foreach (var empDep in employeeDto.DepartmentsIds)
             {
-                EmployeeDepartment EmployeeDepartment = new EmployeeDepartment()
+                EmployeeDepartment employeeDepartment = new EmployeeDepartment()
                 {
                     EmployeeId = employee.EmployeeId,
                     DepartmentId = empDep
                 };
-                departmentEmployees.Add(EmployeeDepartment);
+                employeeDepartments.Add(employeeDepartment);
             }
-            _context.EmployeeDepartments.AddRange(departmentEmployees);
-            _context.SaveChanges();
+            _context.EmployeeDepartments.AddRange(employeeDepartments);
+                  _context.SaveChanges();
             return Ok();
         }
         [HttpPatch]
-        public IActionResult PatchEmployee([FromBody]JsonPatchDocument patchEmployee,int id)
+        public IActionResult PatchEmployee([FromBody]JsonPatchDocument<Employee> patchEmployee,int id)
         {
             var employeeInDb =_context.Employees.Find(id);
             if (employeeInDb == null)  return BadRequest(error: "Employee does not exist");
-             patchEmployee.ApplyTo(employeeInDb);
-                  _context.SaveChanges();
-            //var employeeDepartments = _context.EmployeeDepartments.ToList();
-            //updatedEmployee.ApplyTo(employeeDepartments);
-            //EmployeeDto employeeDto = new EmployeeDto();
-            //Employee.ApplyTo(employeeDto);
-            //Employee employee = new Employee()
-            //{
-            //    EmployeeId = employeeDto.EmployeeId,
-            //    EmployeeName = employeeDto.EmployeeName,
-            //    EmployeeAddress = employeeDto.EmployeeAddress,
-            //    DesignationId = employeeDto.DesignationId,
-
-            //};
-            //List<EmployeeDepartment> departmentEmployees = new List<EmployeeDepartment>();
-            //foreach (var empDep in employeeDto.DepartmentsIds)
-            //{
-            //    EmployeeDepartment EmployeeDepartment = new EmployeeDepartment()
-            //    {
-            //        EmployeeId = employee.EmployeeId,
-            //        DepartmentId = empDep
-            //    };
-            //    departmentEmployees.Add(EmployeeDepartment);
-            //}
-
-            return Ok();
+           patchEmployee.ApplyTo(employeeInDb);
+              _context.SaveChanges();
+                   return Ok();
         }
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)

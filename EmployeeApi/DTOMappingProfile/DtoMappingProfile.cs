@@ -13,6 +13,7 @@ namespace EmployeeApi.DTOMappingProfile
         public DtoMappingProfile()
         {
             CreateMap<Employee, EmployeeDto>().ReverseMap();
+            CreateMap<Employee, EmployeeListDto>().ReverseMap();
         }
     }
 }

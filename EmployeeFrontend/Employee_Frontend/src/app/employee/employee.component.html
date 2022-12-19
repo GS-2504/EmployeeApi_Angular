@@ -1,0 +1,97 @@
+<div>
+<h1 class="text-success text-center">Employee List</h1>
+<button class="btn btn-info offset-8" id="button2" data-toggle="modal" data-backdrop="false" data-target="#employee">Add Employee</button>
+</div>
+<div class="col-12 p-2 m-2">
+<table class="table table-active table-stripped">
+    <thead>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Designation</th>
+        <th>Departments</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let employee of employees">
+            <td>{{employee.employeeName}}</td>
+            <td>{{employee.employeeAddress}}</td>
+            <td>{{employee.employeeDesignationName}}</td>
+            <td>{{employee.employeeDepartments}}</td>
+            <td>
+                <button class="btn btn-success p-1 m-1 ">Edit</button>
+                <button class="btn btn-danger p-1 m-1 ">Delete</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<!-- <create> -->
+<div class="modal" role="dialog" id="employee">
+    <form [formGroup]="employeeForm" (ngSubmit)="onSave()">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+    <div>Add New Employee</div>
+    <div>
+         <button class="close" data-dismiss="modal" type="modal"><span>&times;</span></button></div>
+    </div>
+    <div class="modal-body">
+    <div class="form-group row">
+     <div class="col-4">
+        <label for="name" class="control-lable" >Name</label>
+     </div>
+     <div class="col-8">
+        <input type="text" id="name" formControlName="name" placeholder="Enter Name" class="form-control" />
+        <div>
+            <span *ngIf="(employeeForm.get('name')?.invalid ) && employeeForm.controls['name']?.touched " class="text-danger">This field is required</span>
+        </div>
+    </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-4">
+           <label for="address" class="control-lable" >Address</label>
+        </div>
+        <div class="col-8">
+           <input type="text" id="address" formControlName="address" placeholder="Enter Address" class="form-control" />
+           <div>
+            <span *ngIf="employeeForm.get('address')?.invalid && employeeForm.controls['address']?.touched" class="text-danger">This field is required</span>
+        </div>
+        </div>
+       </div>
+       <div class="form-group row">
+        <div class="col-4"><label class=>Select Designation</label></div>
+        <div class="col-8">
+            <select formControlName="designation"  class="form-control">
+                <option  disabled selected>Select </option>
+                <option *ngFor="let  designation of designationList" [value]="designation.designationId">{{designation.designationName}}</option>
+            </select>
+            <div>
+                <span *ngIf="employeeForm.get('designation')?.invalid && employeeForm.controls['designation']?.touched" class="text-danger">This field is required</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-4">
+            <label >Select Departments</label>
+        </div>
+        <div class="col-8">
+             <ng-multiselect-dropdown formControlName="departments" [settings]="dropdownSettings" [data]="departmentList" (onSelect)="SelectedItem($event)" (onSelectAll)="Allselect($event)"></ng-multiselect-dropdown>
+             <div>
+                <span *ngIf="employeeForm.get('departments')?.invalid && employeeForm.controls['departments']?.touched" class="text-danger">This field is required</span>
+            </div>
+        </div>
+    </div>
+     </div>
+     <div class="modal-footer">
+        <div>
+        <button type="submit" class="btn btn-success"  >Save</button>
+        </div>
+        <div>
+        <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+       </div>
+     </div>
+    </div>
+</form>
+</div>
+

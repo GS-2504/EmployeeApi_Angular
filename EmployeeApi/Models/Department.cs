@@ -10,6 +10,7 @@ namespace EmployeeApi.Models
     {
         [Key]
         public int DepartmentId { get; set; }
+        [Required]
         public string DepartmentName { get; set; }
         public ICollection<EmployeeDepartment> EmployeeDepartments { get; set; }
     }

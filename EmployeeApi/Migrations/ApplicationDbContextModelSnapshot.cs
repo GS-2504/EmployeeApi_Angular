@@ -26,6 +26,7 @@ namespace EmployeeApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("DepartmentName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DepartmentId");
@@ -41,6 +42,7 @@ namespace EmployeeApi.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("DesignationName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DesignationId");
@@ -59,9 +61,11 @@ namespace EmployeeApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EmployeeAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmployeeName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EmployeeId");
@@ -73,15 +77,15 @@ namespace EmployeeApi.Migrations
 
             modelBuilder.Entity("EmployeeApi.Models.EmployeeDepartment", b =>
                 {
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.HasKey("EmployeeId", "DepartmentId");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasKey("DepartmentId", "EmployeeId");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("EmployeeDepartments");
                 });

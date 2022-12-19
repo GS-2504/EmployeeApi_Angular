@@ -10,6 +10,7 @@ namespace EmployeeApi.Models
     {
         [Key]
         public int DesignationId { get; set; }
+        [Required]
         public string DesignationName { get; set; }
         
     }
