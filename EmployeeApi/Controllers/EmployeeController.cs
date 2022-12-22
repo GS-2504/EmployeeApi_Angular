@@ -2,7 +2,6 @@
 using EmployeeApi.Data;
 using EmployeeApi.Models;
 using EmployeeApi.Models.DTOs;
-using EmployeeApi.Models.EmployeeVM;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -86,12 +85,12 @@ namespace EmployeeApi.Controllers
                   _context.Employees.Add(employee);
                        _context.SaveChanges();
              List<EmployeeDepartment> departmentEmployees = new List<EmployeeDepartment>();
-             foreach (var empDep in  employeeDto.DepartmentsIds)
+             foreach (var empDepId in  employeeDto.DepartmentsIds)
             {
                 EmployeeDepartment EmployeeDepartment = new EmployeeDepartment()
                 {
                     EmployeeId = employee.EmployeeId,
-                    DepartmentId = empDep
+                    DepartmentId = empDepId
                 };
                 departmentEmployees.Add(EmployeeDepartment);
             }
@@ -128,15 +127,16 @@ namespace EmployeeApi.Controllers
                   _context.SaveChanges();
             return Ok();
         }
-        [HttpPatch]
-        public IActionResult PatchEmployee([FromBody]JsonPatchDocument<Employee> patchEmployee,int id)
-        {
-            var employeeInDb =_context.Employees.Find(id);
-            if (employeeInDb == null)  return BadRequest(error: "Employee does not exist");
-           patchEmployee.ApplyTo(employeeInDb);
-              _context.SaveChanges();
-                   return Ok();
-        }
+        //[HttpPatch]
+        //public IActionResult PatchEmployee([FromBody]JsonPatchDocument<Employee> patchEmployee,int id)
+        //{
+        //    var employeeInDb =_context.Employees.Find(id);
+        //    if (employeeInDb == null)  return BadRequest(error: "Employee does not exist");
+        //   patchEmployee.ApplyTo(employeeInDb);
+        //      _context.SaveChanges();
+        //           return Ok();
+        //}
+
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)
         {

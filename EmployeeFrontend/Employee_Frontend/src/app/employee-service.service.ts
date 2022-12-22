@@ -18,6 +18,9 @@ export class EmployeeServiceService {
    addEmployee(employee:AddEmployee):Observable<AddEmployee>{
      return this.client.post<AddEmployee>("https://localhost:44317/api/Employee",employee);
    }
+   deleteEmployee(id:number):Observable<number>{
+    return this.client.delete<number>("https://localhost:44317/api/Employee/"+id);
+    }
   GetAllDesignation():Observable<any>{
      return this.client.get<any>("https://localhost:44317/api/Designation");
   }

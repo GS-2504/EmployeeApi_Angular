@@ -1,11 +1,14 @@
+import { Departments } from "./departments";
+
 export class AddEmployee {
     EmployeeId:number;
     EmployeeName:any;
     EmployeeAddress:any;
     DesignationId:any;
-    Department!:Array<number>;
-   constructor(){
+     department:Departments[]=[]
+     constructor(){
        this.EmployeeId=0;
+       
    }
 }
 

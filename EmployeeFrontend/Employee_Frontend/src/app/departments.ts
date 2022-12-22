@@ -1,5 +1,5 @@
 export class Departments {
-     DepartmentId!:number
-     DepartmentName!:string
+     departmentId!:number
+     departmentName!:string
 
 }

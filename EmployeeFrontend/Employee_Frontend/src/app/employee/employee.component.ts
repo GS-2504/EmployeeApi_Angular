@@ -19,6 +19,8 @@ export class EmployeeComponent implements OnInit {
   dropdownSettings:IDropdownSettings={};
   addEmployee:AddEmployee=new AddEmployee();
   employeeForm!:FormGroup
+  data:[]=[];
+  list:[]=[];
 
   constructor(private service:EmployeeServiceService,private formBuilder:FormBuilder)
   { 
@@ -76,11 +78,23 @@ export class EmployeeComponent implements OnInit {
     allowSearchFilter: true
   }}
     
-    SelectedItem(item:any){
-     //this.obj.departmentsIds=item.departmentId
-     
-    //this.obj.departmentsIds=  item.departmentId
-      //  console.log(this.obj.departmentsIds)
+  selectAllItems(item:any){
+    for(let i=0;i<=item.length;i++){
+
+      this.data=item[i].departmentId;
+      this.list=this.data;
+      console.log(this.list);
+    }
+       console.log(item);
+    }
+    selectSingleItem(item:any){
+
+
+        this.data=item.departmentId;
+        this.list=this.data;
+        console.log(this.list);
+ 
+         console.log(item);
     }
     Allselect(item:any){
         // console.log(item.departmentId);
@@ -103,5 +117,20 @@ export class EmployeeComponent implements OnInit {
       //  }
       //   );
     }
-  
+    deleteEmployee(id:number){
+      var ans = confirm('Want to Delete Employee')
+      if(!ans)  return;
+      this.service.deleteEmployee(id).subscribe(
+       (response)=>{
+         this.GetAll();
+       },
+       (error)=>{
+           console.log(error);
+       }
+      )
+}
+updateEmployee(){
+
+}
+
 }

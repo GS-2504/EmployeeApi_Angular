@@ -17,8 +17,7 @@ namespace EmployeeApi.Models.DTOs
         public List<string> DepartmentsName { get; set; }
         public string  Departments { get; set; }
         public int DepartmentId { get; set; }
-        
-         
+       
 
     }
 }
