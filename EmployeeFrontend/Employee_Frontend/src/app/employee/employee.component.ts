@@ -6,6 +6,7 @@ import { Employee } from '../employee';
 import { EmployeeServiceService } from '../employee-service.service';
 import { Designation } from '../designation';
 import { AddEmployee } from '../add-employee';
+import { EditEmployee } from '../edit-employee';
 
 @Component({
   selector: 'app-employee',
@@ -18,13 +19,26 @@ export class EmployeeComponent implements OnInit {
   designationList:Designation[]=[];
   dropdownSettings:IDropdownSettings={};
   addEmployee:AddEmployee=new AddEmployee();
+  editEmployees:EditEmployee= new EditEmployee();
   employeeForm!:FormGroup
-  data:[]=[];
-  list:[]=[];
+  updateEmployeeForm!:FormGroup
+  list:any[]=[];
+  departments=[{
+        departmentId:[],
+        departmentName:[]
+  }]
 
   constructor(private service:EmployeeServiceService,private formBuilder:FormBuilder)
   { 
       this.employeeForm=this.formBuilder.group({
+        EmployeeId:[],
+        name:['',Validators.required],
+        address:['',Validators.required],
+        designation:['',Validators.required],
+        departments:['',Validators.required]
+      }),
+      this.updateEmployeeForm= this.formBuilder.group({
+        EmployeeId:[],
         name:['',Validators.required],
         address:['',Validators.required],
         designation:['',Validators.required],
@@ -36,7 +50,7 @@ export class EmployeeComponent implements OnInit {
      this.GetAllDepartment();
      this.DropDownSettings();
      this.GetAllDesignation();
-     
+    
     }
       GetAll(){
         this.service.getAllEmployees().subscribe(
@@ -49,7 +63,7 @@ export class EmployeeComponent implements OnInit {
    )   
 }
   GetAllDepartment(){
-    this.service.GetAllDepartment().subscribe(
+    this.service.getAllDepartment().subscribe(
       (response)=>{
           this.departmentList=response;
       },
@@ -59,7 +73,7 @@ export class EmployeeComponent implements OnInit {
     )
   }
   GetAllDesignation(){
-     this.service.GetAllDesignation().subscribe(
+     this.service.getAllDesignation().subscribe(
       (response)=>{
             this.designationList=response;
       },
@@ -77,46 +91,32 @@ export class EmployeeComponent implements OnInit {
     unSelectAllText: "UnSelect All Departments",
     allowSearchFilter: true
   }}
-    
-  selectAllItems(item:any){
-    for(let i=0;i<=item.length;i++){
-
-      this.data=item[i].departmentId;
-      this.list=this.data;
-      console.log(this.list);
-    }
-       console.log(item);
-    }
-    selectSingleItem(item:any){
-
-
-        this.data=item.departmentId;
-        this.list=this.data;
-        console.log(this.list);
- 
-         console.log(item);
-    }
-    Allselect(item:any){
-        // console.log(item.departmentId);
-    }
     onSave(){
+       
+        if(this.employeeForm.invalid){
+         this.employeeForm.markAllAsTouched();
+          return ;
+       }
       this.addEmployee.EmployeeName = this.employeeForm.value.name 
       this.addEmployee.EmployeeAddress=this.employeeForm.value.address
       this.addEmployee.DesignationId = this.employeeForm.value.designation
-        console.log(this.employeeForm.value.deparment.departmentId)
-      // console.log(this.employeeForm.value['departmentId'])
-          //this.addEmployee.Department
-          //console.log(this.obj.departmentsIds)
-       // this.addEmployee.DepartmentsIds=this.obj.departmentsIds
-         console.log(this.employeeForm.value);
-      //  this.addEmployee.DepartmentsIds= this.departmentsIds
-       // console.log(this.addEmployee);
-      // console.log(this.addEmployee);
-      //    this.service.addEmployee(this.addEmployee).subscribe(
-      //    (response)=>{
-      //  }
-      //   );
-    }
+        this.departments= this.employeeForm.value.departments
+          for(let i=0;i<this.departments.length;i++){
+               
+                    this.list.push(this.departments[i].departmentId);
+               }
+        this.addEmployee.DepartmentsIds= this.list
+         this.service.addEmployee(this.addEmployee).subscribe(
+         (response)=>{
+            this.list=[];
+            this.GetAll();
+       },
+          (error)=>{
+            this.emptyModal();
+              console.log(error);
+          }
+        )
+        } 
     deleteEmployee(id:number){
       var ans = confirm('Want to Delete Employee')
       if(!ans)  return;
@@ -129,8 +129,63 @@ export class EmployeeComponent implements OnInit {
        }
       )
 }
-updateEmployee(){
+  editEmployee(id:number){
+         this.service.getEmployeeById(id).subscribe(
+          (response)=>{
+              console.log(response);
+               this.editEmployees.EmployeeId = response.employeeId
+               this.editEmployees.EmployeeName= response.employeeName
+               this.editEmployees.EmployeeAddress= response.employeeAddress
+               this.editEmployees.DesignationId = response.designationId
+                this.editEmployees.departmentName=response.departmentName
+          },
+          (error)=>{
+             console.log(error);
+          }
+         )  
+  }
 
-}
+    emptyModal()
+    {
+        this.addEmployee.EmployeeName="";
+        this.addEmployee.EmployeeAddress="",
+        this.addEmployee.DesignationId="",
+        this.list=[];
+    }
+    updateEmployee(){
+        console.log(this.editEmployees);
+      if(this.updateEmployeeForm.invalid){
+        this.updateEmployeeForm.markAllAsTouched();
+         return ;
+      }
+         //  this.departments= this.addEmployee.DepartmentsIds
+  //       debugger
+      for(let i=0;i<this.editEmployees.departmentsIds.length;i++){
+               
+             this.list.push(this.editEmployees.departmentsIds[i].departmentId);
+            
+   }         
+           this.editEmployees.departmentsIds= this.list
+            // console.log(this.list);
+            // console.log(this.addEmployee);
+        this.service.updateEmployee(this.editEmployees).subscribe(
+          (response)=>{
+                this.GetAll();
+                this.list=[]
+                this.editEmployees.EmployeeId = 0
+                this.editEmployees.EmployeeName= ""
+                this.editEmployees.EmployeeAddress= ""
+                this.editEmployees.DesignationId = 0
+                 this.editEmployees.departmentName= "";
+               alert('user updated')
+          },
+          (error)=>{
+                    console.log(error);
+          }
+        )
+      }
+
+
+
 
 }

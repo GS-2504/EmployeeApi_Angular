@@ -3,5 +3,5 @@ export class Employee {
     employeeName:any;
     employeeAddress:any;
     employeeDesignationName:any;
-    employeeDepartments:any;
+    departmentName:any;
 }

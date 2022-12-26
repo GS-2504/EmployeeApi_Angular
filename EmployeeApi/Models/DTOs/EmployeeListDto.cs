@@ -10,7 +10,10 @@ namespace EmployeeApi.Models.DTOs
         public int EmployeeId { get; set; }
         public string EmployeeName { get; set; }
         public string EmployeeAddress { get; set; }
+        public int DesignationId { get; set; }
+        public List<String> DepartmentName { get; set; }
+        public List<int> DepartmentsIds { get; set;}
+        public string MyProperty { get; set; }
         public string EmployeeDesignationName { get; set; }
-        public List<String> EmployeeDepartments { get; set; }
     }
 }

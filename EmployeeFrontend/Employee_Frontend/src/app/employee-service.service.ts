@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import { Observable} from 'rxjs'
 import { Employee } from './employee';
 import { AddEmployee } from './add-employee';
+import { EditEmployee } from './edit-employee';
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +22,16 @@ export class EmployeeServiceService {
    deleteEmployee(id:number):Observable<number>{
     return this.client.delete<number>("https://localhost:44317/api/Employee/"+id);
     }
-  GetAllDesignation():Observable<any>{
-     return this.client.get<any>("https://localhost:44317/api/Designation");
+    getEmployeeById(id:number):Observable<any>{
+   return this.client.get<any>("https://localhost:44317/api/Employee/"+id)
   }
-  GetAllDepartment():Observable<any>{
-    return this.client.get<any>("https://localhost:44317/api/Department");
-  }
+    updateEmployee(employee:EditEmployee):Observable<any>{
+       return this.client.put<any>("https://localhost:44317/api/Employee",employee)
+    }
+   getAllDesignation():Observable<any>{
+    return this.client.get<any>("https://localhost:44317/api/Designation");
+ }
+   getAllDepartment():Observable<any>{
+   return this.client.get<any>("https://localhost:44317/api/Department");
+ }
 }

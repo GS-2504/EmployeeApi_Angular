@@ -31,18 +31,18 @@ namespace EmployeeApi.Controllers
             if (employeeFromDb == null) return NotFound();
             var departmentFromDb = _context.EmployeeDepartments.
                 Where(emp => emp.EmployeeId == id).Select(dep => dep.Department.DepartmentName);
-             List<string> departmentsNameList = new List<string>();
+             List<string> departmentsNames = new List<string>();
             foreach (var dep in departmentFromDb)
             {
-                departmentsNameList.Add(dep);
+                departmentsNames.Add(dep);
             }
             EmployeeListDto employeeListDto = new EmployeeListDto()
             {
                 EmployeeId = employeeFromDb.EmployeeId,
                 EmployeeName = employeeFromDb.EmployeeName,
-                EmployeeDesignationName = employeeFromDb.Designation.DesignationName,
+                DesignationId = employeeFromDb.Designation.DesignationId,
                 EmployeeAddress = employeeFromDb.EmployeeAddress,
-                EmployeeDepartments= departmentsNameList
+                DepartmentName = departmentsNames
             };
             return Ok(employeeListDto);
         }
@@ -58,7 +58,7 @@ namespace EmployeeApi.Controllers
                                          EmployeeName = employee.EmployeeName,
                                          EmployeeAddress = employee.EmployeeAddress,
                                          EmployeeDesignationName = employee.Designation.DesignationName,
-                                         EmployeeDepartments = _context.EmployeeDepartments.Where(emp => emp.EmployeeId == employee.EmployeeId).
+                                         DepartmentName = _context.EmployeeDepartments.Where(emp => emp.EmployeeId == employee.EmployeeId).
                                          Select(dep => dep.Department.DepartmentName).ToList()
                                      };
                   List<EmployeeListDto> employeeList = new List<EmployeeListDto>();
@@ -101,7 +101,7 @@ namespace EmployeeApi.Controllers
         [HttpPut]
         public IActionResult UpdateEmployee(EmployeeDto employeeDto)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid && employeeDto==null) return BadRequest();
             Employee employee = new Employee()
             {
                 EmployeeId = employeeDto.EmployeeId,

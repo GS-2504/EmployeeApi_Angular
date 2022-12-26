@@ -11,8 +11,11 @@ namespace EmployeeApi.Models.DTOs
         public int EmployeeId { get; set; }
        [Required]
         public string  EmployeeName { get; set; }
+        [Required]
         public string EmployeeAddress { get; set; }
+        [Required]
         public int DesignationId { get; set; }
+        [Required]
         public List<int> DepartmentsIds { get; set; }
         public List<string> DepartmentsName { get; set; }
         public string  Departments { get; set; }

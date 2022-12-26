@@ -16,9 +16,9 @@
             <td>{{employee.employeeName}}</td>
             <td>{{employee.employeeAddress}}</td>
             <td>{{employee.employeeDesignationName}}</td>
-            <td>{{employee.employeeDepartments}}</td>
+            <td>{{employee.departmentName}}</td>
             <td>
-                <button class="btn btn-success p-1 m-1 " data-toggle="modal" data-target="#update">Edit</button>
+                <button class="btn btn-success p-1 m-1 " data-toggle="modal" data-target="#update" (click)="editEmployee(employee.employeeId)" >Edit</button>
                 <button class="btn btn-danger p-1 m-1 " (click)="deleteEmployee(employee.employeeId)">Delete</button>
             </td>
         </tr>
@@ -26,8 +26,11 @@
 </table>
 </div>
 <!-- <create> -->
+
+
+
 <div class="modal" role="dialog" id="employee">
-    <form [formGroup]="employeeForm" (ngSubmit)="onSave()">
+    <form [formGroup]="employeeForm">
     <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
@@ -61,8 +64,8 @@
        <div class="form-group row">
         <div class="col-4"><label class=>Select Designation</label></div>
         <div class="col-8">
-            <select formControlName="designation"  class="form-control">
-                <option  disabled selected>Select </option>
+            <select formControlName="designation" ngDefaultControl class="form-control">
+                <option selected disabled >Select Designation</option>
                 <option *ngFor="let  designation of designationList" [value]="designation.designationId">{{designation.designationName}}</option>
             </select>
             <div>
@@ -75,7 +78,7 @@
             <label >Select Departments</label>
         </div>
         <div class="col-8">
-             <ng-multiselect-dropdown  formControlName="departments" (onSelectAll)="selectAllItems($event)" (onSelect)="selectSingleItem($event)" [settings]="dropdownSettings" [data]="departmentList"></ng-multiselect-dropdown>
+             <ng-multiselect-dropdown  formControlName="departments" [settings]="dropdownSettings" [data]="departmentList"></ng-multiselect-dropdown>
              <div>
                 <span *ngIf="employeeForm.get('departments')?.invalid && employeeForm.controls['departments']?.touched" class="text-danger">This field is required</span>
             </div>
@@ -84,7 +87,7 @@
      </div>
      <div class="modal-footer">
         <div>
-        <button type="submit" class="btn btn-success"  >Save</button>
+        <button type="submit" class="btn btn-success" (click)="onSave()"  data-dismiss="modal" >Save</button>
         </div>
         <div>
         <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -94,67 +97,68 @@
     </div>
 </form>
 </div>
-       
-     <!-- Update user!-->
+
+     <!-- update -->
+
      <div class="modal" role="dialog" id="update">
-        <form [formGroup]="employeeForm" (ngSubmit)="updateEmployee()">
+        <form  [formGroup]="updateEmployeeForm" >
         <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-        <div>Update Employee</div>
+        <div>Add New Employee</div>
         <div>
              <button class="close" data-dismiss="modal" type="modal"><span>&times;</span></button></div>
         </div>
         <div class="modal-body">
         <div class="form-group row">
          <div class="col-4">
-            <label for="name" class="control-lable" >Name</label>
+            <label for="name"   class="control-lable" >Name</label>
          </div>
          <div class="col-8">
-            <input type="text" id="name" formControlName="name" placeholder="Enter Name" class="form-control" />
+            <input type="text" id="name"[(ngModel)]="editEmployees.EmployeeName" formControlName="name"  placeholder="Enter Name" class="form-control" />
             <div>
-                <span *ngIf="(employeeForm.get('name')?.invalid ) && employeeForm.controls['name']?.touched " class="text-danger">This field is required</span>
+                <span *ngIf="(updateEmployeeForm.get('name')?.invalid ) && updateEmployeeForm.controls['name']?.touched " class="text-danger">This field is required</span>
             </div>
         </div>
         </div>
         <div class="form-group row">
             <div class="col-4">
-               <label for="address" class="control-lable" >Address</label>
+               <label for="address"  class="control-lable" >Address</label>
             </div>
             <div class="col-8">
-               <input type="text" id="address" formControlName="address" placeholder="Enter Address" class="form-control" />
+               <input type="text" id="address" [(ngModel)]="editEmployees.EmployeeAddress" formControlName="address" placeholder="Enter Address" class="form-control" />
                <div>
-                <span *ngIf="employeeForm.get('address')?.invalid && employeeForm.controls['address']?.touched" class="text-danger">This field is required</span>
+                <span *ngIf="updateEmployeeForm.get('address')?.invalid && updateEmployeeForm.controls['address']?.touched" class="text-danger">This field is required</span>
             </div>
             </div>
            </div>
            <div class="form-group row">
-            <div class="col-4"><label class=>Select Designation</label></div>
+            <div class="col-4"  ><label class=>Select Designation</label></div>
             <div class="col-8">
-                <select formControlName="designation"  class="form-control">
-                    <option  disabled selected>Select </option>
+                <select  formControlName="designation" [(ngModel)]="editEmployees.DesignationId" ngDefaultControl class="form-control" >
+                    <option selected disabled >Select Designation</option>
                     <option *ngFor="let  designation of designationList" [value]="designation.designationId">{{designation.designationName}}</option>
                 </select>
                 <div>
-                    <span *ngIf="employeeForm.get('designation')?.invalid && employeeForm.controls['designation']?.touched" class="text-danger">This field is required</span>
+                    <span *ngIf="updateEmployeeForm.get('designation')?.invalid && updateEmployeeForm.controls['designation']?.touched" class="text-danger">This field is required</span>
                 </div>
             </div>
         </div>
         <div class="form-group row">
             <div class="col-4">
-                <label >Select Departments</label>
+                <label  ngDefaultControl  >Select Departments</label>
             </div>
             <div class="col-8">
-                 <ng-multiselect-dropdown  formControlName="departments" [settings]="dropdownSettings"  [data]="departmentList"></ng-multiselect-dropdown>
+                 <ng-multiselect-dropdown [(ngModel)]="editEmployees.departmentsIds" formControlName="departments" [settings]="dropdownSettings"   ngDefaultControl [data]="departmentList"></ng-multiselect-dropdown>
                  <div>
-                    <span *ngIf="employeeForm.get('departments')?.invalid && employeeForm.controls['departments']?.touched" class="text-danger">This field is required</span>
+                    <span *ngIf="updateEmployeeForm.get('departments')?.invalid && updateEmployeeForm.controls['departments']?.touched" class="text-danger">This field is required</span>
                 </div>
             </div>
         </div>
          </div>
          <div class="modal-footer">
             <div>
-            <button type="submit" class="btn btn-success"  >Update</button>
+            <button type="submit" class="btn btn-success"  (click)="updateEmployee()" data-dismiss="modal" >Update</button>
             </div>
             <div>
             <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
@@ -164,4 +168,3 @@
         </div>
     </form>
     </div>
- -->

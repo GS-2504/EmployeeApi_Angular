@@ -4,7 +4,7 @@ import { AboutusComponent } from './aboutus/aboutus.component';
 import { EmployeeComponent } from './employee/employee.component';
 
 const routes: Routes = [
-  {path:"",redirectTo:"Home",pathMatch:"full"},
+  {path:"",redirectTo:"Employee",pathMatch:"full"},
   {path:"Employee",component:EmployeeComponent},
   {path:"Aboutus",component:AboutusComponent}
 ];

@@ -1,12 +1,12 @@
 import { Departments } from "./departments";
 
-export class AddEmployee {
+export class EditEmployee {
     EmployeeId:number;
     EmployeeName:any;
     EmployeeAddress:any;
     DesignationId:any;
-    departments:any[]=[]
-    DepartmentsIds:number[]=[]
+    departmentName:any
+    departmentsIds:any[]=[]
      constructor(){
        this.EmployeeId=0;
        
