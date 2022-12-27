@@ -18,11 +18,12 @@ export class EmployeeComponent implements OnInit {
   departmentList:Departments[]=[];
   designationList:Designation[]=[];
   dropdownSettings:IDropdownSettings={};
-  addEmployee:AddEmployee=new AddEmployee();
+  addEmployees:AddEmployee=new AddEmployee();
   editEmployees:EditEmployee= new EditEmployee();
   employeeForm!:FormGroup
   updateEmployeeForm!:FormGroup
   list:any[]=[];
+  dep:any[]=[];
   departments=[{
         departmentId:[],
         departmentName:[]
@@ -31,12 +32,11 @@ export class EmployeeComponent implements OnInit {
   constructor(private service:EmployeeServiceService,private formBuilder:FormBuilder)
   { 
       this.employeeForm=this.formBuilder.group({
-        EmployeeId:[],
         name:['',Validators.required],
         address:['',Validators.required],
         designation:['',Validators.required],
         departments:['',Validators.required]
-      }),
+      })
       this.updateEmployeeForm= this.formBuilder.group({
         EmployeeId:[],
         name:['',Validators.required],
@@ -92,21 +92,22 @@ export class EmployeeComponent implements OnInit {
     allowSearchFilter: true
   }}
     onSave(){
-       
+         console.log(this.employeeForm.value);
         if(this.employeeForm.invalid){
          this.employeeForm.markAllAsTouched();
           return ;
        }
-      this.addEmployee.EmployeeName = this.employeeForm.value.name 
-      this.addEmployee.EmployeeAddress=this.employeeForm.value.address
-      this.addEmployee.DesignationId = this.employeeForm.value.designation
+      
+      this.addEmployees.EmployeeName = this.employeeForm.value.name 
+      this.addEmployees.EmployeeAddress=this.employeeForm.value.address
+      this.addEmployees.DesignationId = this.employeeForm.value.designation
         this.departments= this.employeeForm.value.departments
           for(let i=0;i<this.departments.length;i++){
                
                     this.list.push(this.departments[i].departmentId);
                }
-        this.addEmployee.DepartmentsIds= this.list
-         this.service.addEmployee(this.addEmployee).subscribe(
+        this.addEmployees.DepartmentsIds= this.list
+         this.service.addEmployee(this.addEmployees).subscribe(
          (response)=>{
             this.list=[];
             this.GetAll();
@@ -132,42 +133,50 @@ export class EmployeeComponent implements OnInit {
   editEmployee(id:number){
          this.service.getEmployeeById(id).subscribe(
           (response)=>{
-              console.log(response);
-               this.editEmployees.EmployeeId = response.employeeId
-               this.editEmployees.EmployeeName= response.employeeName
-               this.editEmployees.EmployeeAddress= response.employeeAddress
-               this.editEmployees.DesignationId = response.designationId
-                this.editEmployees.departmentName=response.departmentName
+               console.log(response);
+              this.editEmployees.EmployeeId = response.employeeId
+              this.editEmployees.EmployeeName= response.employeeName
+              this.editEmployees.EmployeeAddress= response.employeeAddress
+              this.editEmployees.DesignationId = response.designationId
+              this.editEmployees.DepartmentsIds=response.departments
+             // console.log(response.departments[0].departmentName)
+            
           },
           (error)=>{
              console.log(error);
           }
          )  
   }
-
     emptyModal()
     {
-        this.addEmployee.EmployeeName="";
-        this.addEmployee.EmployeeAddress="",
-        this.addEmployee.DesignationId="",
+        this.addEmployees.EmployeeName="";
+        this.addEmployees.EmployeeAddress="",
+        this.addEmployees.DesignationId="",
         this.list=[];
     }
+    Deplist(){
+      debugger
+      this.service.getAllDepartment().subscribe(
+        (response)=>{
+            this.departmentList=response;
+        },
+        (error)=>{
+              console.log(error);
+        }
+      )
+    }
     updateEmployee(){
-        console.log(this.editEmployees);
       if(this.updateEmployeeForm.invalid){
         this.updateEmployeeForm.markAllAsTouched();
          return ;
       }
-         //  this.departments= this.addEmployee.DepartmentsIds
-  //       debugger
-      for(let i=0;i<this.editEmployees.departmentsIds.length;i++){
+        
+      for(let i=0;i<this.editEmployees.DepartmentsIds.length;i++){
                
-             this.list.push(this.editEmployees.departmentsIds[i].departmentId);
+             this.list.push(this.editEmployees.DepartmentsIds[i].departmentId);
             
    }         
-           this.editEmployees.departmentsIds= this.list
-            // console.log(this.list);
-            // console.log(this.addEmployee);
+           this.editEmployees.DepartmentsIds= this.list
         this.service.updateEmployee(this.editEmployees).subscribe(
           (response)=>{
                 this.GetAll();
@@ -176,7 +185,8 @@ export class EmployeeComponent implements OnInit {
                 this.editEmployees.EmployeeName= ""
                 this.editEmployees.EmployeeAddress= ""
                 this.editEmployees.DesignationId = 0
-                 this.editEmployees.departmentName= "";
+                 this.editEmployees.DepartmentName= [];
+                 this.editEmployees.DepartmentsIds=[];
                alert('user updated')
           },
           (error)=>{

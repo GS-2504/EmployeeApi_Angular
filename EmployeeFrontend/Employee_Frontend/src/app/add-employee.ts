@@ -5,7 +5,7 @@ export class AddEmployee {
     EmployeeName:any;
     EmployeeAddress:any;
     DesignationId:any;
-    departments:any[]=[]
+   // departments:any[]=[]
     DepartmentsIds:number[]=[]
      constructor(){
        this.EmployeeId=0;

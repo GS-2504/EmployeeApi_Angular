@@ -30,8 +30,8 @@ namespace EmployeeApi.Controllers
             var employeeFromDb = _context.Employees.Include(deg=>deg.Designation).FirstOrDefault(empId=>empId.EmployeeId==id);
             if (employeeFromDb == null) return NotFound();
             var departmentFromDb = _context.EmployeeDepartments.
-                Where(emp => emp.EmployeeId == id).Select(dep => dep.Department.DepartmentName);
-             List<string> departmentsNames = new List<string>();
+                Where(emp => emp.EmployeeId == id).Select(dep => dep.Department);
+             List<Department> departmentsNames = new List<Department>();
             foreach (var dep in departmentFromDb)
             {
                 departmentsNames.Add(dep);
@@ -42,7 +42,7 @@ namespace EmployeeApi.Controllers
                 EmployeeName = employeeFromDb.EmployeeName,
                 DesignationId = employeeFromDb.Designation.DesignationId,
                 EmployeeAddress = employeeFromDb.EmployeeAddress,
-                DepartmentName = departmentsNames
+                Departments = departmentsNames
             };
             return Ok(employeeListDto);
         }

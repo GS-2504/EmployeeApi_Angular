@@ -64,7 +64,7 @@
        <div class="form-group row">
         <div class="col-4"><label class=>Select Designation</label></div>
         <div class="col-8">
-            <select formControlName="designation" ngDefaultControl class="form-control">
+            <select formControlName="designation"  class="form-control">
                 <option selected disabled >Select Designation</option>
                 <option *ngFor="let  designation of designationList" [value]="designation.designationId">{{designation.designationName}}</option>
             </select>
@@ -149,7 +149,7 @@
                 <label  ngDefaultControl  >Select Departments</label>
             </div>
             <div class="col-8">
-                 <ng-multiselect-dropdown [(ngModel)]="editEmployees.departmentsIds" formControlName="departments" [settings]="dropdownSettings"   ngDefaultControl [data]="departmentList"></ng-multiselect-dropdown>
+                 <ng-multiselect-dropdown [(ngModel)]="editEmployees.DepartmentsIds"  formControlName="departments" [settings]="dropdownSettings"  [data]="departmentList"></ng-multiselect-dropdown>
                  <div>
                     <span *ngIf="updateEmployeeForm.get('departments')?.invalid && updateEmployeeForm.controls['departments']?.touched" class="text-danger">This field is required</span>
                 </div>

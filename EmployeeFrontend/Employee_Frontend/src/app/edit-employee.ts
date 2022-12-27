@@ -5,8 +5,9 @@ export class EditEmployee {
     EmployeeName:any;
     EmployeeAddress:any;
     DesignationId:any;
-    departmentName:any
-    departmentsIds:any[]=[]
+    DepartmentName:any
+    DepartmentsIds:any[]=[]
+   
      constructor(){
        this.EmployeeId=0;
        
