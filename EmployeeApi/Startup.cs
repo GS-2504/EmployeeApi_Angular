@@ -32,6 +32,8 @@ namespace EmployeeApi
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("conStr")));
             services.AddControllers().AddNewtonsoftJson();
             services.AddAutoMapper(typeof(DtoMappingProfile));
+           
+           
             services.AddCors(options => options.AddPolicy(name: "MyPolicy", builder =>
             {
                 builder.WithOrigins("http://localhost:4200").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();

@@ -3,10 +3,10 @@ using EmployeeApi.Data;
 using EmployeeApi.Models;
 using EmployeeApi.Models.DTOs;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +19,12 @@ namespace EmployeeApi.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(ApplicationDbContext context)
+        public EmployeeController(ApplicationDbContext context, ILogger<EmployeeController> logger)
         {
             _context = context;
+            _logger = logger;
         }
         [HttpGet("{id:int}")]
         public IActionResult GetEmployee(int id)
@@ -44,7 +46,9 @@ namespace EmployeeApi.Controllers
                 EmployeeAddress = employeeFromDb.EmployeeAddress,
                 Departments = departmentsNames
             };
+            _logger.LogInformation("Get employee by id method working fine");
             return Ok(employeeListDto);
+
         }
         [HttpGet]
         public IActionResult GetAllEmployees()
@@ -127,15 +131,7 @@ namespace EmployeeApi.Controllers
                   _context.SaveChanges();
             return Ok();
         }
-        //[HttpPatch]
-        //public IActionResult PatchEmployee([FromBody]JsonPatchDocument<Employee> patchEmployee,int id)
-        //{
-        //    var employeeInDb =_context.Employees.Find(id);
-        //    if (employeeInDb == null)  return BadRequest(error: "Employee does not exist");
-        //   patchEmployee.ApplyTo(employeeInDb);
-        //      _context.SaveChanges();
-        //           return Ok();
-        //}
+        
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteEmployee(int id)
